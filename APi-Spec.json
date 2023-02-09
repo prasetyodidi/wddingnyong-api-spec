@@ -1,0 +1,662 @@
+{
+  "openapi":"3.0.2",
+  "info": {
+    "title":"Weddingnyong",
+    "description": "API Spec for Weddingnyong",
+    "version":"1.0",
+    "contact": {
+      "name": "Didi Prasetyo",
+      "email": "didiprasetyo360@gmail.com",
+      "url": "https://prasetyodidi.github.io/"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "servers": [
+    {
+      "url":"https://api.server.test/v1"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "user": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "name", "email"]
+      },
+      "successLogin": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "token": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "register":{
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/user"
+          }
+        }
+      },
+      "invitation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "brideName": {
+            "type": "string"
+          },
+          "albums": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/comment"
+            }
+          }
+        }
+      },
+      "comment": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "confirmation": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "commentAt": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string"
+          }
+        }
+      },
+      "itemError":{
+        "type": "object",
+        "properties": {
+          "name":{
+            "type": "string"
+          },
+          "messages":{
+            "type": "array",
+            "items":{
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "invitationId": {
+        "name": "invitationId",
+        "in": "path",
+        "required": true,
+        "description": "invitation id",
+        "schema": {
+          "type": "string",
+          "example": "randomstring"
+        }
+      }
+    },
+    "securitySchemes": {
+      "JWTBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "TokenResetPassword": {
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "header"
+      }
+    }
+  },
+  "paths": {
+    "/invitations": {
+      "get": {
+        "tags": ["Invitation"],
+        "description": "",
+        "parameters": [],
+        "summary": "get all invitation",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Invitation"],
+        "description": "",
+        "parameters": [],
+        "requestBody":{
+          "content": {
+            "application/json":{
+              "schema":{
+                "type": "object",
+                "properties": {
+                  "brideName":{
+                    "type": "string"
+                  },
+                  "brideFullName": {
+                    "type": "string"
+                  },
+                  "brideInfo": {
+                    "type": "string"
+                  },
+                  "groomInstagram": {
+                    "type": "string"
+                  },
+                  "groomName": {
+                    "type": "string"
+                  },
+                  "groomFullName": {
+                    "type": "string"
+                  },
+                  "groomInfo": {
+                    "type": "string"
+                  },
+                  "brideInstagram": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "type": "object",
+                  "properties": {
+                    "invitation":{
+                      "type": "object",
+                      "properties": {
+                        "name":{
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/invitation/{invitationId}":{
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/invitationId"
+        }
+      ],
+      "get": {
+        "tags": ["Invitation"],
+        "description": "show invitation",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/invitation"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Invitation"],
+        "description": "update invitation",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "JWTBearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Invitation"],
+        "description": "Delete invitation",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "JWTBearer": []
+          }
+        ]
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": ["Auth"],
+        "description": "login user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 6
+                  }
+                },
+                "required": ["id"]
+              },
+              "examples": {
+                "validData": {
+                  "description": "user data is valid",
+                  "value": {
+                    "email": "didiprasetyo360@gmail.com",
+                    "password": "password"
+                  }
+                },
+                "invalidFormatEmail":{
+                  "description": "input email invalid",
+                  "value":{
+                    "email": "didiprasetyo360#gmail.com",
+                    "password": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/successLogin"
+                },
+                "examples": {
+                  "validData": {
+                    "description": "user data is valid",
+                    "value": {
+                      "status": 200,
+                      "message": "success login",
+                      "data": {
+                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "user have an error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status":{
+                      "type": "integer"
+                    },
+                    "message":{
+                      "type": "string"
+                    },
+                    "data":{
+                      "type": "array",
+                      "items":{
+                        "$ref":"#/components/schemas/itemError"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "emailOrPasswordIncorrect": {
+                    "description": "email or password is incorrect",
+                    "value": {
+                      "status": 400,
+                      "message": "email or password is incorrect",
+                      "data": []
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "tags": ["Auth"],
+        "description": "",
+        "requestBody": {
+          "content": {
+            "application/json":{
+              "schema":{
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name":{
+                    "type": "string"
+                  },
+                  "email":{
+                    "type": "string"
+                  },
+                  "password":{
+                    "type": "string"
+                  }
+                }
+              },
+              "examples": {
+                "validData": {
+                  "description": "user data is valid",
+                  "value": {
+                    "id": "0f24a1c2-4197-4d6a-b109-df4fc4c7d75c",
+                    "name": "Didi Prasetyo",
+                    "email": "didiprasetyo360@gmail.com",
+                    "password": "password"
+                  }
+                },
+                "passwordTooShort": {
+                  "description": "user password is too short",
+                  "value": {
+                    "id": "8bdf16eb-aa2a-4a06-96e6-fb05a8ebf9b4",
+                    "name": "Adrian Aji",
+                    "email": "adrianaji1945@gmail.com",
+                    "password": "pass"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "$ref": "#/components/schemas/register"
+                },
+                "examples": {
+                  "validData":{
+                    "description": "valid data",
+                    "value":{
+                      "status": 200,
+                      "message": "OK",
+                      "data": {
+                        "id": "0f24a1c2-4197-4d6a-b109-df4fc4c7d75c",
+                        "name": "Didi Prasetyo",
+                        "email": "didiprasetyo360@gmail.com"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400":{
+            "description": "Invalid input data",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "type": "object",
+                  "properties": {
+                    "status":{
+                      "type": "integer"
+                    },
+                    "message":{
+                      "type": "string"
+                    },
+                    "data":{
+                      "type": "array",
+                      "items":{
+                        "$ref":"#/components/schemas/itemError"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "errorValidation":{
+                    "description": "email invalid format, password have too short length and have no capital letter",
+                    "value":{
+                      "status": 400,
+                      "message": "You have an error in input values",
+                      "data":[
+                        {
+                          "name": "email",
+                          "messages": [
+                            "invalid format"
+                          ]
+                        },
+                        {
+                          "name": "password",
+                          "messages": [
+                            "password too short",
+                            "have no capital letter"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "description": "user logout",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "type": "object",
+                  "properties": {
+                    "status":{
+                      "type": "integer"
+                    },
+                    "message":{
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "success":{
+                    "description": "success logout",
+                    "value": {
+                      "status": 200,
+                      "message": "success logout"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400":{
+            "description": "error",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "type": "object",
+                  "properties": {
+                    "status":{
+                      "type": "integer"
+                    },
+                    "message":{
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "failed":{
+                    "description": "failed logout",
+                    "value": {
+                      "status": 400,
+                      "message": "token invalid"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWTBearer": []
+          }
+        ]
+      }
+    },
+    "/reset-password": {
+      "post": {
+        "tags": ["Auth"],
+        "description": "user request reset password",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/verify-email/{id}/{hash}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "user id",
+          "schema": {
+            "type": "string",
+            "example": "randomstring"
+          }
+        },
+        {
+          "name": "hash",
+          "in": "path",
+          "required": true,
+          "description": "hashing data",
+          "schema": {
+            "type": "string",
+            "example": "randomstring"
+          }
+        }
+      ],
+      "get": {
+        "tags": ["Auth"],
+        "description": "user verify email",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/resend-email-verification": {
+      "post": {
+        "tags": ["Auth"],
+        "description": "user request email verification again",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/password": {
+      "put": {
+        "tags": ["Auth"],
+        "description": "user update password",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "TokenResetPassword": []
+          }
+        ]
+      }
+    }
+  }
+}
