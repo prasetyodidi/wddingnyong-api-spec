@@ -132,10 +132,20 @@
     },
     "parameters": {
       "invitationId": {
-        "name": "invitationId",
+        "name": "Invitation Id",
         "in": "path",
         "required": true,
-        "description": "invitation id",
+        "description": "Invitation id",
+        "schema": {
+          "type": "string",
+          "example": "randomstring"
+        }
+      },
+      "guestId": {
+        "name": "guest id",
+        "in": "path",
+        "required": true,
+        "description": "Guest id",
         "schema": {
           "type": "string",
           "example": "randomstring"
@@ -153,18 +163,119 @@
         "name": "api_key",
         "in": "header"
       }
+    },
+    "responses": {
+      "invitationNotFound": {
+        "description": "Invitation not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            },
+            "example": {
+              "status": 404,
+              "message": "Invitation not found"
+            }
+          }
+        }
+      },
+      "guestNotFound": {
+        "description": "Guest not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            },
+            "example": {
+              "status": 404,
+              "message": "Guest not found"
+            }
+          }
+        }
+      },
+      "userUnauthorized": {
+        "description": "User Unautorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            },
+            "example": {
+              "status": 401,
+              "message": "You are not authorized"
+            }
+          }
+        }
+      }
     }
   },
   "paths": {
     "/invitations": {
       "get": {
         "tags": ["Invitation"],
-        "description": "",
         "parameters": [],
         "summary": "get all invitation",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "invitations": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "url": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -178,29 +289,97 @@
               "schema":{
                 "type": "object",
                 "properties": {
-                  "brideName":{
+                  "design": {
                     "type": "string"
                   },
-                  "brideFullName": {
+                  "packageType": {
                     "type": "string"
                   },
-                  "brideInfo": {
+                  "audio": {
                     "type": "string"
                   },
-                  "groomInstagram": {
+                  "typeZone": {
                     "type": "string"
                   },
-                  "groomName": {
-                    "type": "string"
+                  "bride": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "fullName": {
+                        "type": "string"
+                      },
+                      "info": {
+                        "type": "string"
+                      },
+                      "instagram": {
+                        "type": "string"
+                      }
+                    }
                   },
-                  "groomFullName": {
-                    "type": "string"
+                  "groom": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "fullName": {
+                        "type": "string"
+                      },
+                      "info": {
+                        "type": "string"
+                      },
+                      "instagram": {
+                        "type": "string"
+                      }
+                    }
                   },
-                  "groomInfo": {
-                    "type": "string"
+                  "wedding": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "string"
+                      },
+                      "time_start": {
+                        "type": "string"
+                      },
+                      "time_end": {
+                        "type": "string"
+                      },
+                      "address": {
+                        "type": "string"
+                      },
+                      "map": {
+                        "type": "string"
+                      }
+                    }
                   },
-                  "brideInstagram": {
-                    "type": "string"
+                  "reception": {
+                    "type": "object",
+                    "properties": {
+                      "date": {
+                        "type": "string"
+                      },
+                      "time_start": {
+                        "type": "string"
+                      },
+                      "time_end": {
+                        "type": "string"
+                      },
+                      "address": {
+                        "type": "string"
+                      },
+                      "map": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "albums": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
                   }
                 }
               }
@@ -218,8 +397,25 @@
                     "invitation":{
                       "type": "object",
                       "properties": {
-                        "name":{
+                        "status":{
+                          "type": "integer"
+                        },
+                        "message": {
                           "type": "string"
+                        },
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "invitationId": {
+                              "type": "string"
+                            },
+                            "designId": {
+                              "type": "string"
+                            },
+                            "packageType": {
+                              "type": "string"
+                            }
+                          }
                         }
                       }
                     }
@@ -261,6 +457,12 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/userUnauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/invitationNotFound"
           }
         }
       },
@@ -270,6 +472,12 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "$ref": "#/components/responses/userUnauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/invitationNotFound"
           }
         },
         "security": [
@@ -284,7 +492,141 @@
         "parameters": [],
         "responses": {
           "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "summary": "delete success",
+                  "value": {
+                    "status": 200,
+                    "message": "invitation has been deleted"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/userUnauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/invitationNotFound"
+          }
+        },
+        "security": [
+          {
+            "JWTBearer": []
+          }
+        ]
+      }
+    },
+    "/invitation/{invitationId}/edit": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/invitationId"
+        }
+      ],
+      "get": {
+        "description": "get invitation for editing",
+        "tags": ["Invitation"],
+        "responses": {
+          "200": {
             "description": "OK"
+          },
+          "404": {
+            "$ref": "#/components/responses/invitationNotFound"
+          },
+          "401": {
+            "$ref": "#/components/responses/userUnauthorized"
+          }
+        },
+        "security": [
+          {
+            "JWTBearer": []
+          }
+        ]
+      }
+    },
+    "/guests": {
+      "get": {
+        "tags": ["Guest"],
+        "responses": {
+
+        },
+        "security": [
+          {
+            "JWTBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Guest"],
+        "responses": {
+
+        },
+        "security": [
+          {
+            "JWTBearer": []
+          }
+        ]
+      }
+    },
+    "/guest/{guestid}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/guestId"
+        }
+      ],
+      "get": {
+        "tags": ["Guest"],
+        "responses": {
+          "401": {
+            "$ref": "#/components/responses/userUnauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/guestNotFound"
+          }
+        },
+        "security": [
+          {
+            "JWTBearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Guest"],
+        "responses": {
+          "401": {
+            "$ref": "#/components/responses/userUnauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/guestNotFound"
+          }
+        },
+        "security": [
+          {
+            "JWTBearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Guest"],
+        "responses": {
+          "401": {
+            "$ref": "#/components/responses/userUnauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/guestNotFound"
           }
         },
         "security": [
