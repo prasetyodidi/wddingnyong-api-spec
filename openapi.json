@@ -132,7 +132,7 @@
     },
     "parameters": {
       "invitationId": {
-        "name": "Invitation Id",
+        "name": "invitationId",
         "in": "path",
         "required": true,
         "description": "Invitation id",
@@ -142,7 +142,7 @@
         }
       },
       "guestId": {
-        "name": "guest id",
+        "name": "guestId",
         "in": "path",
         "required": true,
         "description": "Guest id",
@@ -151,6 +151,7 @@
           "example": "randomstring"
         }
       }
+
     },
     "securitySchemes": {
       "JWTBearer": {
@@ -561,7 +562,9 @@
       "get": {
         "tags": ["Guest"],
         "responses": {
-
+          "200": {
+            "description": "OK"
+          }
         },
         "security": [
           {
@@ -572,7 +575,9 @@
       "post": {
         "tags": ["Guest"],
         "responses": {
-
+          "200": {
+            "description": "OK"
+          }
         },
         "security": [
           {
@@ -581,7 +586,7 @@
         ]
       }
     },
-    "/guest/{guestid}": {
+    "/guest/{guestId}": {
       "parameters": [
         {
           "$ref": "#/components/parameters/guestId"
