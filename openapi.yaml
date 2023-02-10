@@ -135,6 +135,38 @@ components:
       schema:
         type: string
         example: randomstring
+    designId:
+      name: designId
+      in: path
+      required: true
+      description: Guest id
+      schema:
+        type: string
+        example: randomGuestId
+    testimonyId:
+      name: testimonyId
+      in: path
+      required: true
+      description: Testimony id
+      schema:
+        type: string
+        example: randomTestimonyId
+    audioId:
+      name: audioId
+      in: path
+      required: true
+      description: Audio id
+      schema:
+        type: string
+        example: randoAudioId
+    priceId:
+      name: priceId
+      in: path
+      required: true
+      description: Price id
+      schema:
+        type: string
+        example: randomPriceId
   securitySchemes:
     JWTBearer:
       type: http
@@ -490,6 +522,8 @@ paths:
       security:
         - JWTBearer: []
   /guest/{guestId}/checkin:
+    parameters:
+      - $ref: "#/components/parameters/guestId"
     get:
       tags:
         - Guest Actions
@@ -497,6 +531,8 @@ paths:
         200:
           description: OK
   /guest/{guestId}/attendance:
+    parameters:
+      - $ref: "#/components/parameters/guestId"
     put:
       tags:
         - Guest Actions
@@ -504,6 +540,8 @@ paths:
         200:
           description: OK
   /guest/{guestId}/upload-avatar:
+    parameters:
+      - $ref: "#/components/parameters/guestId"
     put:
       tags:
         - Guest Actions
@@ -535,6 +573,8 @@ paths:
         200:
           description: OK
   /design/{designId}:
+    parameters:
+      - $ref: "#/components/parameters/designId"
     get:
       tags:
         - Design
@@ -560,7 +600,9 @@ paths:
       responses:
         200:
           description: OK
-  /audio:
+  /audio/{audioId}:
+    parameters:
+      - $ref: "#/components/parameters/audioId"
     get:
       tags:
         - Audio
@@ -586,7 +628,9 @@ paths:
       responses:
         200:
           description: OK
-  /price:
+  /price/{priceId}:
+    parameters:
+      - $ref: "#/components/parameters/priceId"
     get:
       tags:
         - Price
@@ -613,6 +657,8 @@ paths:
         200:
           description: OK
   /testimony/{testimonyId}:
+    parameters:
+      - $ref: "#/components/parameters/testimonyId"
     get:
       tags:
         - Testimony
