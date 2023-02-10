@@ -12,6 +12,23 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
   - url: https://api.server.test/v1
+tags:
+  - name: Invitation
+    description: Operation about invitation
+  - name: Guest
+    description: Operation about guest
+  - name: Guest Actions
+    description: Operation for guest ability
+  - name: Design
+    description: Operation about design
+  - name: Audio
+    description: Operation about audio
+  - name: Price
+    description: Operation about price
+  - name: Testimony
+    description: Operation about testimony
+  - name: Auth
+    description: Operation about authentication
 components:
   schemas:
     user:
