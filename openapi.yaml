@@ -87,6 +87,37 @@ components:
           type: array
           items:
             type: string
+    groom:
+      type: object
+      properties:
+        name:
+          type: string
+        fullName:
+          type: string
+        info:
+          type: string
+        instagram:
+          type: string
+    event:
+      type: object
+      properties:
+        date:
+          type: string
+        time_start:
+          type: string
+        time_end:
+          type: string
+        address:
+          type: string
+        map:
+          type: string
+    design:
+      type: object
+      properties:
+        name:
+          type: string
+        imageUrl:
+          type: string
   parameters:
     invitationId:
       name: invitationId
@@ -157,6 +188,96 @@ components:
             status: 401
             message: You are not authorized
 paths:
+  /invitation:
+    get:
+      summary: get required data for create invitation
+      tags:
+        - Invitation
+      responses:
+        200:
+          description: success get required data for create invitation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      prices:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            price:
+                              type: integer
+                      designs:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/design"
+      security:
+        - JWTBearer: []
+    post:
+      summary: store invitation
+      tags:
+        - Invitation
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                design:
+                  type: string
+                packageType:
+                  type: string
+                audio:
+                  type: string
+                timeZone:
+                  type: string
+                bride:
+                  $ref: "#/components/schemas/groom"
+                groom:
+                  $ref: "#/components/schemas/groom"
+                wedding:
+                  $ref: "#/components/schemas/event"
+                reception:
+                  $ref: "#/components/schemas/event"
+                albums:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  invitation:
+                    type: object
+                    properties:
+                      status:
+                        type: integer
+                      message:
+                        type: string
+                      data:
+                        type: object
+                        properties:
+                          invitationId:
+                            type: string
+                          designId:
+                            type: string
+                          packageType:
+                            type: string
   /invitations:
     get:
       tags:
@@ -187,105 +308,11 @@ paths:
                               type: string
                             url:
                               type: string
-    post:
-      tags:
-        - Invitation
-      description: ''
-      parameters: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                design:
-                  type: string
-                packageType:
-                  type: string
-                audio:
-                  type: string
-                typeZone:
-                  type: string
-                bride:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    fullName:
-                      type: string
-                    info:
-                      type: string
-                    instagram:
-                      type: string
-                groom:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    fullName:
-                      type: string
-                    info:
-                      type: string
-                    instagram:
-                      type: string
-                wedding:
-                  type: object
-                  properties:
-                    date:
-                      type: string
-                    time_start:
-                      type: string
-                    time_end:
-                      type: string
-                    address:
-                      type: string
-                    map:
-                      type: string
-                reception:
-                  type: object
-                  properties:
-                    date:
-                      type: string
-                    time_start:
-                      type: string
-                    time_end:
-                      type: string
-                    address:
-                      type: string
-                    map:
-                      type: string
-                albums:
-                  type: array
-                  items:
-                    type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  invitation:
-                    type: object
-                    properties:
-                      status:
-                        type: integer
-                      message:
-                        type: string
-                      data:
-                        type: object
-                        properties:
-                          invitationId:
-                            type: string
-                          designId:
-                            type: string
-                          packageType:
-                            type: string
   /invitation/{invitationId}:
     parameters:
       - $ref: '#/components/parameters/invitationId'
     get:
+      summary: show invitation
       tags:
         - Invitation
       description: show invitation
@@ -314,6 +341,19 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  groom:
+                    $ref: "#/components/schemas/groom"
+                  bride:
+                    $ref: "#/components/schemas/groom"
+                  design:
+                    $ref: "#/components/schemas/design"
+                  packageType:
+                    type: string
         '401':
           $ref: '#/components/responses/userUnauthorized'
         '404':
@@ -348,22 +388,6 @@ paths:
           $ref: '#/components/responses/invitationNotFound'
       security:
         - JWTBearer: []
-  /invitation/{invitationId}/edit:
-    parameters:
-      - $ref: '#/components/parameters/invitationId'
-    get:
-      description: get invitation for editing
-      tags:
-        - Invitation
-      responses:
-        '200':
-          description: OK
-        '401':
-          $ref: '#/components/responses/userUnauthorized'
-        '404':
-          $ref: '#/components/responses/invitationNotFound'
-      security:
-        - JWTBearer: []
   /guests:
     get:
       tags:
@@ -371,6 +395,37 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        phoneNumber:
+                          type: string
+                        checkinStatus:
+                          type: string
+                          nullable: true
+                        qrUrl:
+                          type: string
+              example:
+                status: 200
+                message: success get list of guests
+                data: [
+                  {name: "Ucup surucup", phoneNumber: 08123123111, checkinStatus: null, qrUrl: "https://randomurlqrl"},
+                  {name: "Otong", phoneNumber: 08123123222, checkinStatus: "27-12-2022, 13:20", qrUrl: "https://randomurlqrl"},
+                  {name: "Mario", phoneNumber: 08123123333, checkinStatus:  "27-12-2022, 14:20", qrUrl: "https://randomurlqrl"},
+                ]
       security:
         - JWTBearer: []
     post:
@@ -388,13 +443,33 @@ paths:
       tags:
         - Guest
       responses:
-        '401':
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      statusAttendance:
+                        type: string
+                      qrUrl:
+                        type: string
+        401:
           $ref: '#/components/responses/userUnauthorized'
-        '404':
+        404:
           $ref: '#/components/responses/guestNotFound'
       security:
         - JWTBearer: []
-    post:
+    put:
       tags:
         - Guest
       responses:
@@ -414,6 +489,148 @@ paths:
           $ref: '#/components/responses/guestNotFound'
       security:
         - JWTBearer: []
+  /guest/{guestId}/checkin:
+    get:
+      tags:
+        - Guest Actions
+      responses:
+        200:
+          description: OK
+  /guest/{guestId}/attendance:
+    put:
+      tags:
+        - Guest Actions
+      responses:
+        200:
+          description: OK
+  /guest/{guestId}/upload-avatar:
+    put:
+      tags:
+        - Guest Actions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                avatarUrl:
+                  type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+  /designs:
+    get:
+      tags:
+        - Design
+      responses:
+        200:
+          description: OK
+  /design/{designId}:
+    get:
+      tags:
+        - Design
+      responses:
+        200:
+          description: OK
+    put:
+      tags:
+        - Design
+      responses:
+        200:
+          description: OK
+    delete:
+      tags:
+        - Design
+      responses:
+        200:
+          description: OK
+  /audios:
+    get:
+      tags:
+        - Audio
+      responses:
+        200:
+          description: OK
+  /audio:
+    get:
+      tags:
+        - Audio
+      responses:
+        200:
+          description: OK
+    put:
+      tags:
+        - Audio
+      responses:
+        200:
+          description: OK
+    delete:
+      tags:
+        - Audio
+      responses:
+        200:
+          description: OK
+  /prices:
+    get:
+      tags:
+        - Price
+      responses:
+        200:
+          description: OK
+  /price:
+    get:
+      tags:
+        - Price
+      responses:
+        200:
+          description: OK
+    put:
+      tags:
+        - Price
+      responses:
+        200:
+          description: OK
+    delete:
+      tags:
+        - Price
+      responses:
+        200:
+          description: OK
+  /testimonies:
+    get:
+      tags:
+        - Testimony
+      responses:
+        200:
+          description: OK
+  /testimony/{testimonyId}:
+    get:
+      tags:
+        - Testimony
+      responses:
+        200:
+          description: OK
+    put:
+      tags:
+        - Testimony
+      responses:
+        200:
+          description: OK
+    delete:
+      tags:
+        - Testimony
+      responses:
+        200:
+          description: OK
   /login:
     post:
       tags:
@@ -584,7 +801,7 @@ paths:
                     status: 200
                     message: success logout
         '400':
-          description: error
+          description: client error
           content:
             application/json:
               schema:
